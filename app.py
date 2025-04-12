@@ -42,3 +42,6 @@ def get_lifelog_by_date():
         return jsonify({"results": results})
     except Exception as e:
         return jsonify({"error": str(e)}), 200  # <= ここを 500 から 200 にして、NotFoundも正常応答扱いに
+@app.route("/")
+def index():
+    return "Lifelog API is running!"
