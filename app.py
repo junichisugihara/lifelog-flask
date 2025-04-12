@@ -11,14 +11,13 @@ DATABASE_ID = os.environ["NOTION_DB_ID"]
 def index():
     return "Lifelog API is running!"
 
-@app.route("/getLifelogByDate", methods=["POST"])
-def get_lifelog_by_date():
+@app.route("/search", methods=["GET"])
+def search_lifelog_by_mmdd():
     try:
-        mmdd = request.json.get("mmdd")
+        mmdd = request.args.get("mmdd")
         if not mmdd:
             return jsonify({"error": "Missing mmdd"}), 400
 
-        # 形式統一（例: 4/5 → 04-05）
         mmdd = mmdd.replace("/", "-").zfill(5)
         if len(mmdd) == 4:
             mmdd = "0" + mmdd
@@ -48,7 +47,6 @@ def get_lifelog_by_date():
                 if not date_str:
                     continue
 
-                # MM-DD 抽出して比較
                 if date_str[5:10] == mmdd:
                     category = props["カテゴリ"]["select"]["name"] if props.get("カテゴリ") and props["カテゴリ"].get("select") else "未分類"
                     text = "".join([t["plain_text"] for t in props["text"]["title"]]) if props.get("text") and props["text"].get("title") else ""
@@ -105,7 +103,7 @@ def search_lifelog_by_keyword():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Renderで動作するようポートを指定
+# Renderで動作するようにポート指定
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
