@@ -23,7 +23,7 @@ def get_lifelog_by_date():
                 }
             },
             sorts=[
-                {"property": "date", "direction": "descending"}
+                {"property": "DATE", "direction": "descending"}
             ]
         )
 
