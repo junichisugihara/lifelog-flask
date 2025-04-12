@@ -31,8 +31,8 @@ def get_lifelog_by_date():
         for page in response["results"]:
             props = page["properties"]
             date = props["DATE"]["start"] if props.get("DATE") and props["DATE"].get("start") else "不明"
-            category = props["category"]["select"]["name"] if props.get("category") and props["category"].get("select") else "未分類"
-            text = "".join([t["plain_text"] for t in props["text"]["rich_text"]]) if props.get("text") and props["text"].get("rich_text") else ""
+            category = props["カテゴリ"]["select"]["name"] if props.get("カテゴリ") and props["カテゴリ"].get("select") else "未分類"
+            text = "".join([t["plain_text"] for t in props["title"]["title"]]) if props.get("title") and props["title"].get("title") else ""
             results.append({
                 "date": date,
                 "category": category,
@@ -54,7 +54,7 @@ def search_lifelog_by_keyword():
         response = notion.databases.query(
             database_id=DATABASE_ID,
             filter={
-                "property": "text",  # ← ここを後で "Name" に変える可能性あり
+                "property": "title",
                 "rich_text": {
                     "contains": keyword
                 }
@@ -68,8 +68,8 @@ def search_lifelog_by_keyword():
         for page in response["results"]:
             props = page["properties"]
             date = props["DATE"]["start"] if props.get("DATE") and props["DATE"].get("start") else "不明"
-            category = props["category"]["select"]["name"] if props.get("category") and props["category"].get("select") else "未分類"
-            text = "".join([t["plain_text"] for t in props["text"]["rich_text"]]) if props.get("text") and props["text"].get("rich_text") else ""
+            category = props["カテゴリ"]["select"]["name"] if props.get("カテゴリ") and props["カテゴリ"].get("select") else "未分類"
+            text = "".join([t["plain_text"] for t in props["title"]["title"]]) if props.get("title") and props["title"].get("title") else ""
             results.append({
                 "date": date,
                 "category": category,
