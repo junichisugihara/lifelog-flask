@@ -17,7 +17,7 @@ def get_lifelog_by_date():
         response = notion.databases.query(
             database_id=DATABASE_ID,
             filter={
-                "property": "date",
+                "property": "DATE",
                 "date": {
                     "contains": mmdd
                 }
