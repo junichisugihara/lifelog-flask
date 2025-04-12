@@ -54,7 +54,7 @@ def search_lifelog_by_keyword():
         response = notion.databases.query(
             database_id=DATABASE_ID,
             filter={
-                "property": "text",
+                "property": "text",  # ← ここを後で "Name" に変える可能性あり
                 "rich_text": {
                     "contains": keyword
                 }
@@ -81,7 +81,19 @@ def search_lifelog_by_keyword():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ポート指定（Renderで必要）
+@app.route("/debug", methods=["POST"])
+def debug():
+    try:
+        response = notion.databases.query(
+            database_id=DATABASE_ID,
+            page_size=1
+        )
+        props = response["results"][0]["properties"]
+        return jsonify({"props": props})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Render 用ポート設定
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
