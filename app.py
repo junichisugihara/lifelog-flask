@@ -30,7 +30,7 @@ def get_lifelog_by_date():
         results = []
         for page in response["results"]:
             props = page["properties"]
-            date = props["DATE"]["date"]["start"] if props.get("DATE") and props["DATE"].get("date") else "不明"
+            date = props["DATE"]["start"] if props.get("DATE") and props["DATE"].get("start") else "不明"
             category = props["category"]["select"]["name"] if props.get("category") and props["category"].get("select") else "未分類"
             text = "".join([t["plain_text"] for t in props["text"]["rich_text"]]) if props.get("text") and props["text"].get("rich_text") else ""
             results.append({
@@ -67,7 +67,7 @@ def search_lifelog_by_keyword():
         results = []
         for page in response["results"]:
             props = page["properties"]
-            date = props["DATE"]["date"]["start"] if props.get("DATE") and props["DATE"].get("date") else "不明"
+            date = props["DATE"]["start"] if props.get("DATE") and props["DATE"].get("start") else "不明"
             category = props["category"]["select"]["name"] if props.get("category") and props["category"].get("select") else "未分類"
             text = "".join([t["plain_text"] for t in props["text"]["rich_text"]]) if props.get("text") and props["text"].get("rich_text") else ""
             results.append({
@@ -81,6 +81,7 @@ def search_lifelog_by_keyword():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# ポート指定（Renderで必要）
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
