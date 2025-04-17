@@ -63,12 +63,15 @@ def search_lifelog_by_mmdd():
                 break
             start_cursor = response["next_cursor"]
 
+        # ✅ レスポンス件数を1件に制限（ChatGPTコネクタエラー対策）
+        results = results[:1]
+
         return jsonify({"results": results})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# 🔁 追加：互換用ルート (/jit-plugin/...)
+# 🔁 互換ルート（GPT Pluginが使うパス）
 @app.route("/jit-plugin/getLifelogByDate", methods=["GET"])
 def legacy_route_alias():
     return search_lifelog_by_mmdd()
