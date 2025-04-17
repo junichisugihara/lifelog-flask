@@ -18,7 +18,7 @@ def search_lifelog_by_mmdd():
         if not mmdd:
             return jsonify({"error": "Missing mmdd"}), 400
 
-        # MM-DD形式に確実に変換（例: 4/12 → 04-12）
+        # MM-DD形式に変換（例: 4/12 → 04-12）
         parts = mmdd.replace("/", "-").split("-")
         if len(parts) == 2:
             month = parts[0].zfill(2)
@@ -67,6 +67,11 @@ def search_lifelog_by_mmdd():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# 🔁 追加：互換用ルート (/jit-plugin/...)
+@app.route("/jit-plugin/getLifelogByDate", methods=["GET"])
+def legacy_route_alias():
+    return search_lifelog_by_mmdd()
 
 # Render用ポート指定
 if __name__ == "__main__":
