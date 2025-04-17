@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from notion_client import Client
 import os
+import sys  # ← stderr出力用
 
 app = Flask(__name__)
 
@@ -33,7 +34,7 @@ def search_lifelog_by_mmdd():
         while True:
             response = notion.databases.query(
                 database_id=DATABASE_ID,
-                page_size=100,
+                page_size=1,  # ✅ Notion API呼び出しを最小化
                 start_cursor=start_cursor,
                 filter={
                     "property": "DATE",
@@ -59,26 +60,24 @@ def search_lifelog_by_mmdd():
                         "text": text
                     })
 
-            if not response.get("has_more"):
+            if not response.get("has_more") or results:
                 break
             start_cursor = response["next_cursor"]
 
-        # ✅ ChatGPT Plugin対策：レスポンス件数を1件に制限
-        results = results[:1]
-
+        results = results[:1]  # ✅ ChatGPT Plugin対策：レスポンスは1件まで
         return jsonify({"results": results})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# 🔁 GPT Plugin互換ルート + ログ出力つき
+# 🔁 GPT Plugin互換ルート（+ レスポンスログ出力）
 @app.route("/jit-plugin/getLifelogByDate", methods=["GET"])
 def legacy_route_alias():
     response = search_lifelog_by_mmdd()
     try:
-        print("🔍 DEBUG RESPONSE:", response.get_json())  # Renderログに出力
+        print("🔍 DEBUG RESPONSE:", response.get_json(), file=sys.stderr)
     except Exception as log_error:
-        print("⚠️ レスポンスログ出力エラー:", str(log_error))
+        print("⚠️ ログ出力エラー:", str(log_error), file=sys.stderr)
     return response
 
 # Render用ポート指定
